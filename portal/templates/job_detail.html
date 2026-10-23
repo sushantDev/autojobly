@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}{{ job.company }} · Autojobly{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <p class="eyebrow"><a href="/jobs">← Jobs</a></p>
+    <h1>{{ job.company }}</h1>
+    <p>{{ job.role }}</p>
+  </div>
+  <span class="badge badge-{{ job.status|lower }} lg">{{ status_labels.get(job.status, job.status) }}</span>
+</header>
+
+<section class="detail-grid">
+  <div class="panel">
+    <dl class="kv">
+      <dt>Fit</dt><dd class="fit">{{ job.fit_percent }}%</dd>
+      <dt>Comp</dt><dd>{{ job.comp_band or '—' }}</dd>
+      <dt>Location</dt><dd>{{ job.location or '—' }}</dd>
+      <dt>Form</dt><dd class="mono">{{ job.ats or 'You send this' }}</dd>
+      <dt>Source</dt><dd class="mono">{{ job.source or '—' }}</dd>
+      <dt>Shortlist</dt><dd>{{ job.shortlist_date or '—' }}</dd>
+      <dt>URL</dt><dd><a href="{{ job.url }}" target="_blank" rel="noopener">{{ job.url }}</a></dd>
+      {% if job.listing_url and job.listing_url != job.url %}
+      <dt>Listed on</dt><dd><a href="{{ job.listing_url }}" target="_blank" rel="noopener">{{ job.source_label or job.source }}</a></dd>
+      {% endif %}
+      <dt>Notes</dt><dd>{{ job.notes or '—' }}</dd>
+    </dl>
+
+    <form class="status-form" method="post" action="/jobs/{{ job.id }}/status">
+      <label>Update status
+        <select name="status">
+          {% for s in ['QUEUED','APPLYING','PARTIAL','BLOCKED','READY','SKIP','CLOSED'] %}
+          <option value="{{ s }}" {% if job.status == s %}selected{% endif %}>{{ status_labels.get(s, s) }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Notes
+        <textarea name="notes" rows="2" placeholder="Optional note…">{{ job.notes or '' }}</textarea>
+      </label>
+      <button type="submit">Save</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>What gets sent</h2>
+    {% if letter %}
+    <p class="muted">The letter uses words from this posting that are already on your CV. The CV file attached is the one you uploaded. It is not rewritten, and it does not include your salary.</p>
+    <h3>Cover letter</h3>
+    <pre class="cv">{{ letter }}</pre>
+    <h3>What happened</h3>
+    <ol class="feature-list">
+      <li>{% if app_submitted %}Sent by Autojobly{% else %}Not sent yet{% endif %}</li>
+      <li>Viewed — not recorded. Employers do not send that to Autojobly.</li>
+      <li>{% if job.status == 'REPLIED' %}Reply — you marked one.{% else %}Reply — not recorded until you mark it. The company writes to the email on the CV.{% endif %}</li>
+    </ol>
+    <p>Years of experience: {{ years_answer or 'blank until you enter them on your profile' }}</p>
+    <p>Visa sponsorship: {{ sponsor_answer or 'blank until you answer it on your profile' }}</p>
+    {% if job.status == 'APPLIED' and app_submitted %}
+    <form method="post" action="/jobs/{{ job.id }}/status">
+      <input type="hidden" name="status" value="REPLIED" />
+      <button type="submit">I got a reply</button>
+    </form>
+    <p class="muted">Use this only when a company writes back. It is the number on the landing page.</p>
+    {% elif job.status == 'REPLIED' %}
+    <p>You marked a reply on this application.</p>
+    {% endif %}
+    {% if free_apply %}
+    <form method="post" action="/jobs/{{ job.id }}/sample">
+      <button type="submit">Send this one free</button>
+    </form>
+    <p class="muted">The first 3 Ashby, Greenhouse, or Lever applications are free.</p>
+    {% elif not paying %}
+    <p class="muted">The free applications are used. <a href="/billing">{{ price_label }}</a> sends more.</p>
+    {% endif %}
+    {% if job.status not in ['APPLIED', 'REPLIED', 'CLOSED'] %}
+    <form method="post" action="/jobs/{{ job.id }}/status">
+      <input type="hidden" name="status" value="CLOSED" />
+      <input type="hidden" name="notes" value="Skipped by the customer" />
+      <button type="submit" class="ghost">Skip this role</button>
+    </form>
+    <p class="muted">Skipped roles stay off the send list after a refresh.</p>
+    {% endif %}
+    {% else %}
+    <p class="empty">Save a profile to preview this application.</p>
+    {% endif %}
+    <h2>Activity</h2>
+    {% if events %}
+    <ul class="timeline">
+      {% for e in events %}
+      <li>
+        <span class="mono">{{ e.created_at }}</span>
+        <strong>{{ e.event_type }}</strong>
+        <span>{{ e.message }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">No events yet.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

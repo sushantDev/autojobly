@@ -1,0 +1,23 @@
+{% extends "auth_base.html" %}
+{% block title %}Sign up · Autojobly{% endblock %}
+{% block chrome %}{% include "site_nav.html" %}{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <p class="eyebrow">Autojobly</p>
+  <h1>Create an account</h1>
+  <p class="muted">Scores are free, and the first 3 Ashby, Greenhouse, or Lever applications are free. Then {{ price_label }} runs the search and sends applications with the email on your CV.</p>
+  {% include "_oauth.html" %}
+  <p class="muted">or use email</p>
+  <form class="stack-form" method="post" action="/signup">
+    <label>Email
+      <input type="email" name="email" required autocomplete="username" />
+    </label>
+    <label>Password
+      <input type="password" name="password" required minlength="8" autocomplete="new-password" />
+    </label>
+    <button type="submit">Sign up</button>
+  </form>
+  <p class="muted">Already registered? <a href="/login">Log in</a></p>
+  <p class="muted legal-links"><a href="/">Home</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p>
+</section>
+{% endblock %}

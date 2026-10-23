@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}CV · Autojobly{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Paste your CV</h1>
+    <p>We read contact details and skills from the text. If you signed in with Google or LinkedIn, the email on that account is used when the CV leaves it blank.</p>
+  </div>
+</header>
+<section class="panel">
+  <form class="stack-form" method="post" action="/onboarding" enctype="multipart/form-data">
+    <label>CV text
+      <textarea name="cv_text" rows="14" placeholder="Paste the CV here…"></textarea>
+    </label>
+    <label>Or upload a PDF or text file
+      <input type="file" name="cv_file" accept=".pdf,.txt,.md,application/pdf,text/plain" />
+    </label>
+    <button type="submit">Read CV</button>
+  </form>
+</section>
+{% endblock %}

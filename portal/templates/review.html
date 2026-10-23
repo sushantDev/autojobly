@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Confirm profile · Autojobly{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Confirm your profile</h1>
+    <p>Country and monthly ask are required. Edit anything the reader missed, then save to score jobs.</p>
+  </div>
+</header>
+<section class="panel">
+  <form class="stack-form" method="post" action="/onboarding/review">
+    <label>Name
+      <input type="text" name="name" value="{{ row.name or '' }}" required />
+    </label>
+    <label>Email on applications
+      <input type="email" name="email" value="{{ row.email or '' }}" required />
+    </label>
+    <label>Phone
+      <input type="text" name="phone" value="{{ row.phone or '' }}" />
+    </label>
+    <label>Country
+      <input type="text" name="location_country" value="{{ row.location_country or '' }}" required />
+    </label>
+    <label>Monthly ask (USD)
+      <input type="number" name="ask_usd_monthly" min="1" value="{{ row.ask_usd_monthly or '' }}" required />
+    </label>
+    <label>Monthly ask (EUR, optional)
+      <input type="number" name="ask_eur_monthly" min="1" value="{{ row.ask_eur_monthly or '' }}" />
+    </label>
+    <label>Skills (comma separated)
+      <input type="text" name="skills" value="{{ row.skills or '' }}" />
+    </label>
+    <label>Years of experience you will stand behind
+      <input type="number" name="years_experience" min="0" max="50" value="{{ row.years_experience or '' }}" />
+    </label>
+    <label>Do you need visa sponsorship?
+      <select name="needs_sponsorship">
+        <option value="" {% if not row.needs_sponsorship %}selected{% endif %}>Leave blank on forms</option>
+        <option value="no" {% if row.needs_sponsorship == 'no' %}selected{% endif %}>No</option>
+        <option value="yes" {% if row.needs_sponsorship == 'yes' %}selected{% endif %}>Yes</option>
+      </select>
+    </label>
+    <label>LinkedIn
+      <input type="url" name="linkedin" value="{{ row.linkedin or '' }}" />
+    </label>
+    <label>GitHub
+      <input type="url" name="github" value="{{ row.github or '' }}" />
+    </label>
+    <label>Portfolio
+      <input type="url" name="portfolio" value="{{ row.portfolio or '' }}" />
+    </label>
+    <textarea name="cv_text" class="hidden-field">{{ row.cv_text or '' }}</textarea>
+    <input type="hidden" name="cv_path" value="{{ row.cv_path or '' }}" />
+    <label class="check">
+      <input type="checkbox" name="consent" value="yes" {% if row.consent %}checked{% endif %} />
+      Submit applications in my name using this CV. I will finish any form that asks for a captcha or a login.
+    </label>
+    <button type="submit">Save and score jobs</button>
+  </form>
+</section>
+{% if row.refined_cv %}
+<section class="panel">
+  <div class="panel-head"><h2>Refined CV preview</h2></div>
+  <pre class="cv">{{ row.refined_cv }}</pre>
+</section>
+{% endif %}
+{% endblock %}

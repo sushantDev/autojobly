@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Jobs · Autojobly{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>{% if status %}{{ status_labels.get(status, status) }}{% else %}Jobs that match{% endif %}</h1>
+    <p>{{ jobs|length }} shown</p>
+  </div>
+  <form class="search" method="get" action="/jobs">
+    {% if status %}<input type="hidden" name="status" value="{{ status }}" />{% endif %}
+    <input type="search" name="q" value="{{ q }}" placeholder="Search company or role…" />
+    <button type="submit">Search</button>
+  </form>
+</header>
+
+<table class="jobs-table">
+  <thead>
+    <tr>
+      <th>Fit</th>
+      <th>Company</th>
+      <th>Role</th>
+      <th>Location</th>
+      <th>Lane</th>
+      <th>Status</th>
+      <th>Source</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for j in jobs %}
+    <tr>
+      <td class="fit">{{ j.fit_percent }}%</td>
+      <td><a href="/jobs/{{ j.id }}">{{ j.company }}</a></td>
+      <td>{{ j.role }}</td>
+      <td class="muted">{{ j.location or '—' }}</td>
+      <td>{{ lane_labels.get(j.lane, j.lane or '—') }}</td>
+      <td><span class="badge badge-{{ j.status|lower }}">{{ status_labels.get(j.status, j.status) }}</span></td>
+      <td class="mono">{{ j.source or '—' }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="empty">No matching jobs.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

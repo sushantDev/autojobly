@@ -1,0 +1,30 @@
+# Free host + free HTTPS domain: https://autojobly.onrender.com
+# After the first deploy, add that URL to Google and LinkedIn as the callback host.
+services:
+  - type: web
+    name: autojobly
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn portal.app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: LINKEDIN_CLIENT_ID
+        sync: false
+      - key: LINKEDIN_CLIENT_SECRET
+        sync: false
+      - key: DODO_PAYMENTS_API_KEY
+        sync: false
+      - key: DODO_PRODUCT_ID
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false

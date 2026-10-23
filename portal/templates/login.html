@@ -1,0 +1,23 @@
+{% extends "auth_base.html" %}
+{% block title %}Log in · Autojobly{% endblock %}
+{% block chrome %}{% include "site_nav.html" %}{% endblock %}
+{% block content %}
+<section class="auth-card">
+  <p class="eyebrow">Autojobly</p>
+  <h1>Log in</h1>
+  <p class="muted">See the jobs scored for your CV, what was submitted today, and what you still need to send.</p>
+  {% include "_oauth.html" %}
+  <p class="muted">or use email</p>
+  <form class="stack-form" method="post" action="/login">
+    <label>Email
+      <input type="email" name="email" required autocomplete="username" />
+    </label>
+    <label>Password
+      <input type="password" name="password" required autocomplete="current-password" />
+    </label>
+    <button type="submit">Log in</button>
+  </form>
+  <p class="muted">No account yet? <a href="/signup">Create one</a></p>
+  <p class="muted legal-links"><a href="/">Home</a> · <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p>
+</section>
+{% endblock %}

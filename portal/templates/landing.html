@@ -1,0 +1,126 @@
+{% extends "auth_base.html" %}
+{% block title %}Autojobly · Applications from your CV{% endblock %}
+{% block description %}Autojobly matches the work on your CV and sends applications on Ashby, Greenhouse, and Lever. The first 3 are free, then $9 a month, up to 15 a day.{% endblock %}
+{% block og_title %}Autojobly · Applications from your CV{% endblock %}
+{% block og_description %}Autojobly matches the work on your CV and sends applications on Ashby, Greenhouse, and Lever. The first 3 are free, then $9 a month.{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Autojobly",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "description": "Sends the CV you upload to roles that match that work. The first 3 applications are free, then $9 a month.",
+  "offers": {
+    "@type": "Offer",
+    "price": "9.00",
+    "priceCurrency": "USD"
+  }
+}
+</script>
+{% endblock %}
+{% block chrome %}{% include "site_nav.html" %}{% endblock %}
+{% block main_class %}site{% endblock %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">For the work on your CV</p>
+    <h1>Your CV, sent to roles that fit.</h1>
+    <p class="lead">It matches the work on your CV, whether that is engineering, design, finance, sales, or support. Ashby, Greenhouse, and Lever. The first 3 applications are free. Then {{ price_label }}, up to 15 a day.</p>
+    <div class="cta-row">
+      <a class="btn" href="/signup">Start free</a>
+      <a class="btn ghost" href="/login">Log in</a>
+    </div>
+    {% include "_oauth.html" %}
+  </div>
+  <aside class="mock" aria-label="Preview of the job list">
+    <div class="mock-chrome"><span></span><span></span><span></span> Preview</div>
+    <div class="mock-row">
+      <div><strong>Canonical</strong><span>Python Engineer · Worldwide</span></div>
+      <em>76%</em>
+    </div>
+    <div class="mock-row">
+      <div><strong>GitLab</strong><span>Frontend Engineer · Remote</span></div>
+      <em>74%</em>
+    </div>
+    <div class="mock-row">
+      <div><strong>Supabase</strong><span>React Engineer · Remote</span></div>
+      <em>74%</em>
+    </div>
+  </aside>
+</section>
+
+<p class="logo-row"><span>Boards in the search</span> GitLab · Stripe · Canonical · Notion · Spotify · Discord · OpenAI · <a href="/roles">See open roles</a></p>
+
+<section class="fact-row" aria-label="What is included">
+  <div><strong>{{ board_count }}</strong><span>Company boards</span></div>
+  <div><strong>3</strong><span>Free to start</span></div>
+  <div><strong>15</strong><span>A day</span></div>
+  <div><strong>{{ price_label }}</strong><span>30 days</span></div>
+</section>
+
+<section class="band" id="how">
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li>
+      <span>1</span>
+      <h3>Add your CV</h3>
+      <p>The file you upload is the file that gets sent.</p>
+    </li>
+    <li>
+      <span>2</span>
+      <h3>See what fits</h3>
+      <p>Country and job title are checked before anything goes out.</p>
+    </li>
+    <li>
+      <span>3</span>
+      <h3>Send the first 3 free</h3>
+      <p>{{ price_label }} continues the search for 30 days.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="band" id="compare">
+  <h2>Compared with volume tools</h2>
+  <div class="compare">
+    <div>
+      <h3>Autojobly</h3>
+      <ul>
+        <li>Country and job title checked first</li>
+        <li>Your own CV file, not a rewrite</li>
+        <li>15 a day, first 3 free</li>
+        <li>{{ price_label }}</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Typical auto-apply tools</h3>
+      <ul>
+        <li>Hundreds of applications a day</li>
+        <li>US-only roles still go out</li>
+        <li>$20 to $50 a month</li>
+        <li>A generated resume on each send</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="price-wrap" id="price">
+  <div class="price-card">
+    <p class="eyebrow">One plan</p>
+    <h2>{{ price_label }}</h2>
+    <ul>
+      <li>Your original CV on every application</li>
+      <li>Up to 15 a day on Ashby, Greenhouse, and Lever</li>
+      <li>Scores stay free</li>
+    </ul>
+    <a class="btn" href="/signup">Create an account</a>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <p class="fine">{% if replies %}{{ replies }} repl{{ 'y' if replies == 1 else 'ies' }} reported from {{ sent }} sent application{{ '' if sent == 1 else 's' }}.{% else %}Customer replies: None yet.{% endif %} Captcha and password sites stay with you. <a href="/terms">Terms</a></p>
+  <p>Listings also from <a href="https://remoteok.com">Remote OK</a>, <a href="https://himalayas.app">Himalayas</a>, <a href="https://www.arbeitnow.com">Arbeitnow</a>, <a href="https://jobicy.com">Jobicy</a>, <a href="https://www.workingnomads.com">Working Nomads</a>, and <a href="https://remotive.com">Remotive</a>.</p>
+  <p class="legal-links"><a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p>
+</footer>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Billing · Autojobly{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Billing</h1>
+    <p>Scores are free. {{ price_label }} runs the job search and submits applications with the email on the CV. A company that wants an interview writes to that email itself.</p>
+  </div>
+  <div class="ask-pill">
+    {% if paying %}
+      Active{% if user.paid_until %} until {{ user.paid_until }}{% endif %}
+    {% else %}
+      Not subscribed
+    {% endif %}
+  </div>
+</header>
+
+<section class="panel">
+  {% if paying %}
+  <p>Auto-apply is on until {{ user.paid_until or 'the paid date' }}. Ashby, Greenhouse, and Lever forms are submitted for you. Captcha, logins, and other boards stay in Apply yourself.</p>
+  {% endif %}
+  {% if dodo_customer %}
+  <p>Your card subscription renews every month through Dodo Payments until you cancel. Cancelling keeps auto-apply on until the paid date.</p>
+  <form method="post" action="/billing/manage" class="page-actions">
+    <button type="submit" class="ghost">Change card, see invoices, or cancel</button>
+  </form>
+  {% elif dodo_on and not paying %}
+  <p>Pay {{ price_label }} by card. It renews every month, and you can cancel from this page at any time. Auto-apply turns on as soon as the payment is confirmed. No receipt to paste.</p>
+  <form method="post" action="/billing/checkout" class="page-actions">
+    <button type="submit">Pay {{ price_label }} by card</button>
+  </form>
+  <h2 class="khalti-head">Paying from Nepal with Khalti</h2>
+  {% endif %}
+  {% if dodo_customer %}
+  {% elif payment and payment.status == 'link_ready' and payment.khalti_url %}
+  <p>{% if paying %}Your next 30 days are ready to pay.{% else %}Your card link is ready.{% endif %} Pay {{ price_label }}, then paste the reference from the receipt. The pay button stays on this page.</p>
+  <p><a class="btn" href="{{ payment.khalti_url }}" target="_blank" rel="noopener">Pay {{ price_label }}</a></p>
+  <form class="stack-form" method="post" action="/billing/claim">
+    <label>Receipt reference
+      <input type="text" name="reference" required minlength="4" placeholder="From the card receipt" />
+    </label>
+    <button type="submit">I have paid</button>
+  </form>
+  {% elif payment and payment.status == 'claimed' %}
+  <p>Reference <strong class="mono">{{ payment.reference }}</strong> is saved. {% if paying %}Current access stays until the next payment is confirmed.{% else %}Auto-apply starts after the payment is confirmed.{% endif %} You do not need to send another request.</p>
+  {% elif payment and payment.status == 'needs_link' %}
+  <h2>{% if paying %}The next link is being prepared{% else %}Your link is being prepared{% endif %}</h2>
+  <p>A card link for <strong>{{ user.email }}</strong> is being prepared.{% if paying %} Current access stays until {{ user.paid_until }}.{% endif %} Stay on this page or come back. The pay button will show here. Do not pay anyone a different amount.</p>
+  <p><a class="btn" href="/billing">Check again</a></p>
+  <p class="muted">Customer reviews are shown only after a real customer writes one. None yet.</p>
+  {% elif not paying %}
+  {% if dodo_on %}
+  <p class="muted">Khalti pays in NPR. A link is made for this account and checked by hand, usually within a day.</p>
+  {% elif stripe_on %}
+  <p>Pay {{ price_label }} by card. Stripe confirms the payment, and access turns on without a receipt paste.</p>
+  <form method="post" action="/billing/checkout" class="page-actions">
+    <button type="submit">Pay {{ price_label }} by card</button>
+  </form>
+  <p class="muted">Nepal accounts can still request a Khalti link below.</p>
+  {% else %}
+  <p>Card checkout is not connected on this server yet. Until it is, a Khalti link is created for this account and confirmed after you pay it.</p>
+  {% endif %}
+  <form method="post" action="/billing/request-link" class="page-actions">
+    <button type="submit" class="{% if stripe_on or dodo_on %}ghost{% endif %}">Request a {{ price_label }} Khalti link</button>
+  </form>
+  {% else %}
+  <form method="post" action="/billing/request-link" class="page-actions">
+    <button type="submit" class="ghost">Request the next 30 days</button>
+  </form>
+  {% endif %}
+  {% if dev_on and not paying %}
+  <form method="post" action="/billing/dev-activate" class="dev-activate">
+    <button type="submit" class="ghost">Activate dev subscription</button>
+  </form>
+  {% endif %}
+</section>
+
+{% if owner %}
+<p class="muted">Customers use this page to pay. You use <a href="/run">Run the business</a> to create links and confirm NPR.</p>
+{% endif %}
+{% endblock %}

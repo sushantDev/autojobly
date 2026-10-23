@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Run the business · Autojobly{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Run the business</h1>
+    <p>You create each card link in the Khalti app. This page never charges a card. Click <strong>NPR is in my wallet</strong> only after the rupees show in Khalti.</p>
+  </div>
+  <div class="ask-pill">{{ desk.active_count }} active</div>
+</header>
+
+<section class="panel">
+  <h2>Pay link for every customer</h2>
+  <p class="muted">Paste one https checkout that anyone can open. Billing then shows Pay now, with no wait for a personal link. Khalti links that only work for one email still belong in the cards below.</p>
+  {% if pay_url %}<p>Current link: <a href="{{ pay_url }}">{{ pay_url }}</a></p>{% endif %}
+  <form class="stack-form" method="post" action="/admin/pay-url">
+    <label>Checkout URL
+      <input type="url" name="pay_link" placeholder="https://" value="{{ pay_url or '' }}" required />
+    </label>
+    <button type="submit">Save pay link</button>
+  </form>
+</section>
+
+<section class="panel">
+  <h2>1. Make a link</h2>
+  <p class="muted">Open Khalti, search Stripe, and type the block below. Paste the https link it gives you. Do not activate the account yet.</p>
+  {% if desk.needs_link %}
+  <div class="queue-grid">
+    {% for p in desk.needs_link %}
+    <article class="queue-card">
+      <h3>{{ p.account_email }}</h3>
+      <pre class="cv">Khalti → search Stripe
+Currency: USD
+Amount: {{ price_usd }}
+Sender email: {{ p.account_email }}
+Purpose: Software subscription
+Then enter your PAN and your PIN.</pre>
+      <form class="stack-form" method="post" action="/admin/payments/{{ p.id }}/link">
+        <label>Paste the Khalti link
+          <input type="url" name="khalti_url" placeholder="https://" required />
+        </label>
+        <button type="submit">Save link</button>
+      </form>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">Nobody is waiting for a link.</p>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>2. Waiting for the customer to pay</h2>
+  <p class="muted">The pay button is on their Billing page. Leave these alone until step 3, unless the wallet already shows the money.</p>
+  {% if desk.waiting_payment %}
+  <div class="queue-grid">
+    {% for p in desk.waiting_payment %}
+    <article class="queue-card">
+      <h3>{{ p.account_email }}</h3>
+      <p><a href="{{ p.khalti_url }}" target="_blank" rel="noopener">Payment link</a></p>
+      <form method="post" action="/admin/payments/{{ p.id }}/approve">
+        <button type="submit">NPR is in my wallet</button>
+      </form>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No links are out waiting for payment.</p>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>3. Check the Khalti wallet</h2>
+  <p class="muted">The customer says they paid. Open Khalti. If this {{ price_label }} is there, activate 30 days. If the balance did not move, do nothing.</p>
+  {% if desk.claimed %}
+  <div class="queue-grid">
+    {% for p in desk.claimed %}
+    <article class="queue-card">
+      <h3>{{ p.account_email }}</h3>
+      <p class="notes">Receipt reference {{ p.reference }}</p>
+      <div class="queue-actions">
+        <form method="post" action="/admin/payments/{{ p.id }}/approve">
+          <button type="submit">NPR is in my wallet</button>
+        </form>
+        <form method="post" action="/admin/payments/{{ p.id }}/reject">
+          <button type="submit" class="ghost">Money did not arrive</button>
+        </form>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No one is waiting on a receipt check.</p>
+  {% endif %}
+</section>
+
+<section class="panel">
+  <h2>4. Renew in the next 7 days</h2>
+  <p class="muted">Starting a renewal puts their email back in step 1. Their current access stays on until the date below.</p>
+  {% if desk.expiring %}
+  <div class="queue-grid">
+    {% for u in desk.expiring %}
+    <article class="queue-card">
+      <h3>{{ u.email }}</h3>
+      <p>Access ends {{ u.paid_until }}</p>
+      <form method="post" action="/admin/users/{{ u.id }}/renew">
+        <button type="submit">Start the next link</button>
+      </form>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty">No subscriptions end in the next 7 days.</p>
+  {% endif %}
+</section>
+{% endblock %}

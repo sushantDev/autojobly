@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Autojobly{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/portal.css" />
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-mark">Aj</span>
+        <div>
+          <strong>Autojobly</strong>
+          <small>{% if profile and profile.name %}{{ profile.name.split(' ')[0] }}{% else %}Account{% endif %} · {% if paying %}subscribed{% else %}free{% endif %}</small>
+        </div>
+      </div>
+      <nav>
+        {% if owner %}<a href="/run" class="{% if page == 'run' %}active{% endif %}">Run the business</a>{% endif %}
+        <a href="/today" class="{% if page == 'today' %}active{% endif %}">Today</a>
+        <a href="/jobs" class="{% if page == 'jobs' %}active{% endif %}">Matches <em>{{ total }}</em></a>
+        <a href="/queue" class="{% if page == 'queue' %}active{% endif %}">Needs you <em class="warn">{{ needs_you }}</em></a>
+        <a href="/jobs?status=APPLIED" class="{% if status == 'APPLIED' %}active{% endif %}">Applied <em>{{ counts.get('APPLIED', 0) }}</em></a>
+        <a href="/profile" class="{% if page == 'profile' %}active{% endif %}">Profile</a>
+        <a href="/billing" class="{% if page == 'billing' %}active{% endif %}">Billing</a>
+      </nav>
+      <form class="side-actions" method="post" action="/logout">
+        <button type="submit" class="ghost">Log out</button>
+      </form>
+    </aside>
+    <main class="main">
+      {% if notice %}<p class="banner">{{ notice }}</p>{% endif %}
+      {% if error %}<p class="banner bad">{{ error }}</p>{% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

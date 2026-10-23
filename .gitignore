@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+profile.yaml
+data/*.db
+data/cvs/
+data/cron.log
+.DS_Store

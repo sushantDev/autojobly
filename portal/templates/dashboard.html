@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Autojobly{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Dashboard</h1>
+    <p>Hybrid pipeline — discover &amp; score locally, apply easy ATS, clear the queue yourself.</p>
+  </div>
+  <div class="ask-pill">Ask €{{ profile.compensation.ask_eur_monthly }} / ${{ profile.compensation.ask_usd_monthly }} · B2B</div>
+</header>
+
+<section class="stat-grid">
+  <div class="stat"><span>Total</span><strong>{{ total }}</strong></div>
+  <div class="stat"><span>Applied</span><strong>{{ counts.get('APPLIED', 0) }}</strong></div>
+  <div class="stat warn"><span>Needs you</span><strong>{{ needs_you }}</strong></div>
+  <div class="stat"><span>Queued</span><strong>{{ counts.get('QUEUED', 0) }}</strong></div>
+  <div class="stat muted"><span>Skipped</span><strong>{{ counts.get('SKIP', 0) }}</strong></div>
+  <div class="stat muted"><span>Closed</span><strong>{{ counts.get('CLOSED', 0) }}</strong></div>
+</section>
+
+<div class="two-col">
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Needs your action</h2>
+      <a href="/queue">View all</a>
+    </div>
+    {% if needs %}
+    <ul class="job-list">
+      {% for j in needs %}
+      <li>
+        <a href="/jobs/{{ j.id }}">
+          <div class="job-meta">
+            <strong>{{ j.company }}</strong>
+            <span>{{ j.role }}</span>
+          </div>
+          <span class="badge badge-{{ j.status|lower }}">{{ j.status }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">Nothing waiting — run daily discover or import your shortlist.</p>
+    {% endif %}
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Recent runs</h2>
+    </div>
+    {% if runs %}
+    <table class="simple">
+      <thead>
+        <tr><th>Date</th><th>Found</th><th>Shortlist</th><th>Manual</th></tr>
+      </thead>
+      <tbody>
+        {% for r in runs %}
+        <tr>
+          <td>{{ r.run_date }}</td>
+          <td>{{ r.discovered }}</td>
+          <td>{{ r.shortlisted }}</td>
+          <td>{{ r.queued_manual }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p class="empty">No runs yet. Click <strong>Run daily discover</strong>.</p>
+    {% endif %}
+  </section>
+</div>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Latest jobs</h2>
+    <a href="/jobs">Browse</a>
+  </div>
+  <table class="jobs-table">
+    <thead>
+      <tr>
+        <th>Fit</th><th>Company</th><th>Role</th><th>Status</th><th>ATS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for j in recent %}
+      <tr>
+        <td class="fit">{{ j.fit_percent }}%</td>
+        <td><a href="/jobs/{{ j.id }}">{{ j.company }}</a></td>
+        <td>{{ j.role }}</td>
+        <td><span class="badge badge-{{ j.status|lower }}">{{ j.status }}</span></td>
+        <td class="mono">{{ j.ats or '—' }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="empty">No jobs in database yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

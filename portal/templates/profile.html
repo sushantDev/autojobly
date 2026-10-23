@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Profile · Autojobly{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Profile</h1>
+    <p>Applications use this profile. Each job gets its own CV and cover letter, using keywords from that posting that are already on your CV.</p>
+  </div>
+  <a class="btn" href="/onboarding/review">Edit</a>
+</header>
+
+{% if profile %}
+<section class="panel">
+  <dl class="kv">
+    <dt>Name</dt><dd>{{ profile.name or '—' }}</dd>
+    <dt>Email</dt><dd>{{ profile.email or '—' }}</dd>
+    <dt>Phone</dt><dd>{{ profile.phone or '—' }}</dd>
+    <dt>Location</dt><dd>{{ profile.location_country or '—' }}</dd>
+    <dt>Ask</dt><dd>${{ profile.compensation.ask_usd_monthly }}{% if profile.compensation.ask_eur_monthly %} / €{{ profile.compensation.ask_eur_monthly }}{% endif %}</dd>
+    <dt>Skills</dt><dd>{{ profile.stack.primary | join(', ') or '—' }}</dd>
+    <dt>Daily cap</dt><dd>{{ profile.filters.daily_cap }}</dd>
+    <dt>Min fit</dt><dd>{{ profile.filters.min_fit_percent }}%</dd>
+    <dt>Auto-apply</dt><dd class="mono">{{ profile.filters.ats_auto_apply | join(', ') }}</dd>
+    <dt>Consent</dt><dd>{{ 'Yes' if profile.consent else 'No' }}</dd>
+    <dt>Already applied</dt><dd>{{ profile.already_applied_companies | join(', ') or '—' }}</dd>
+  </dl>
+</section>
+<section class="panel">
+  <div class="panel-head">
+    <h2>Cover letter</h2>
+  </div>
+  <p class="muted">Open a job to read the letter for that posting. The CV file sent is the one you uploaded. Tenure and work-authorization questions stay blank until you answer them.</p>
+  <pre class="cv">{{ cover_letter }}</pre>
+</section>
+<section class="panel">
+  <div class="panel-head">
+    <h2>Refined CV</h2>
+    <a href="/profile/refined.txt">Open text</a>
+  </div>
+  <pre class="cv">{{ profile.refined_cv }}</pre>
+</section>
+<section class="panel">
+  <h2>Delete this account</h2>
+  <p class="muted">This removes the login, the CV, the scores, and the payment references stored here. An application a company already received stays with that company.</p>
+  <form method="post" action="/account/delete" onsubmit="return confirm('Delete this account and the CV stored here?')">
+    <button type="submit" class="btn ghost">Delete my account</button>
+  </form>
+</section>
+{% else %}
+<p class="empty">Paste a CV to build a profile.</p>
+{% endif %}
+{% endblock %}

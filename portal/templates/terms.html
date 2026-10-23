@@ -1,0 +1,20 @@
+{% extends "auth_base.html" %}
+{% block title %}Terms · Autojobly{% endblock %}
+{% block chrome %}{% include "site_nav.html" %}{% endblock %}
+{% block main_class %}site site-prose{% endblock %}
+{% block content %}
+<article class="prose">
+  <p class="eyebrow"><a href="/">Autojobly</a></p>
+  <h1>Terms</h1>
+  <p>{{ price_label }} is 30 days of job search and Ashby, Greenhouse, and Lever applications for one account. The first 3 of those applications are free. The 30 days start when the payment is confirmed, or stack onto time already paid. If no application was sent after a payment, email the address on the account and the {{ price_label }} charge is refunded.</p>
+  <ul class="feature-list">
+    <li>Scores are free. Auto-apply runs only while the account is paid and the customer has agreed to send applications.</li>
+    <li>Each role gets its own CV and cover letter. Keywords from that posting are used only when they already appear on the customer’s CV. Autojobly does not add employers, skills, years, or work authorization that are not in the CV.</li>
+    <li>Ashby, Greenhouse, and Lever forms are submitted when the role matches the CV. Captcha, password logins, and other company sites stay for the customer to finish. At most 15 applications go out per day. Some job boards forbid automated submissions. Autojobly does not bypass those walls, and the customer is responsible for boards that require a person to apply.</li>
+    <li>A company that wants to talk writes to the email on the CV. Autojobly does not read that inbox and does not promise an interview or a job.</li>
+    <li>The customer pays the amount on the payment link for their own account email. Access begins after that payment is confirmed.</li>
+    <li>The customer must have the right to use the CV they paste.</li>
+  </ul>
+  <p class="muted legal-links"><a href="/">Home</a> · <a href="/privacy">Privacy</a></p>
+</article>
+{% endblock %}

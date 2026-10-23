@@ -1,0 +1,19 @@
+{% extends "auth_base.html" %}
+{% block title %}Privacy · Autojobly{% endblock %}
+{% block chrome %}{% include "site_nav.html" %}{% endblock %}
+{% block main_class %}site site-prose{% endblock %}
+{% block content %}
+<article class="prose">
+  <p class="eyebrow"><a href="/">Autojobly</a></p>
+  <h1>Privacy</h1>
+  <ul class="feature-list">
+    <li>An account stores the email, a password hash, the CV text, the uploaded CV file, and the contact details taken from that CV. There is no separate email verification yet. Use an email you can open, because employers write there.</li>
+    <li>Each application sends the CV file you uploaded and a cover letter written from that CV, plus the email on it, so an employer can write to you directly. Autojobly does not read that inbox.</li>
+    <li>Payment references are stored so a receipt can be matched to the account. Card checkout, when Stripe is connected, is confirmed by Stripe. A Khalti link is confirmed by the operator.</li>
+    <li>You can delete the account from Profile. That removes the login, the CV, the scores, and the payment references stored here. It does not pull back an application a company has already received.</li>
+    <li>Google or LinkedIn sign-in is used only when those connections are turned on. Until then, accounts use email and password.</li>
+    <li>A refund of the monthly charge is available when no application was sent after that payment. Write from the account email. The refund policy is also on the Terms page.</li>
+  </ul>
+  <p class="muted legal-links"><a href="/">Home</a> · <a href="/terms">Terms</a></p>
+</article>
+{% endblock %}

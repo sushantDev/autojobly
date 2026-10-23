@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Today · Autojobly{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Today</h1>
+    <p>{{ boards.today }} · up to 15 roles that match your skills. Ashby, Greenhouse, and Lever can be sent for you. Other sites stay with you.</p>
+  </div>
+  {% if profile %}
+  <div class="ask-pill">Ask ${{ profile.compensation.ask_usd_monthly }}{% if profile.compensation.ask_eur_monthly %} / €{{ profile.compensation.ask_eur_monthly }}{% endif %}</div>
+  {% endif %}
+</header>
+
+<section class="stat-grid">
+  <div class="stat"><span>Auto-applied today</span><strong>{{ boards.applied|length }}</strong></div>
+  <div class="stat warn"><span>Apply yourself</span><strong>{{ boards.manual|length }}</strong></div>
+  <div class="stat"><span>Waiting to auto-apply</span><strong>{{ boards.waiting }}</strong></div>
+  <div class="stat"><span>Applied all time</span><strong>{{ counts.get('APPLIED', 0) }}</strong></div>
+  <div class="stat"><span>Needs you</span><strong>{{ needs_you }}</strong></div>
+</section>
+
+<div class="page-actions">
+  <form method="post" action="/actions/refresh-scores"><button type="submit" class="ghost">Refresh scores</button></form>
+  <form method="post" action="/actions/fetch-jobs"><button type="submit">Fetch new jobs</button></form>
+  {% if paying %}
+  <form method="post" action="/actions/auto-apply"><button type="submit">Auto-apply the next matches</button></form>
+  {% else %}
+  <a class="btn" href="/billing">Subscribe to auto-apply</a>
+  {% endif %}
+</div>
+
+<div class="two-col">
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Auto-applied today</h2>
+    </div>
+    {% if boards.applied %}
+    <ul class="job-list">
+      {% for j in boards.applied %}
+      <li>
+        <a href="/jobs/{{ j.id }}">
+          <div class="job-meta">
+            <strong>{{ j.company }}</strong>
+            <span>{{ j.role }} · {{ j.fit_percent }}%</span>
+          </div>
+          <span class="badge badge-applied">APPLIED</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">Nothing submitted yet today. Subscribed accounts send Ashby, Greenhouse, and Lever applications from the daily run.</p>
+    {% endif %}
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <h2>Apply yourself</h2>
+      <a href="/queue">Queue</a>
+    </div>
+    {% if boards.manual %}
+    <ul class="job-list">
+      {% for j in boards.manual %}
+      <li>
+        <a href="/jobs/{{ j.id }}">
+          <div class="job-meta">
+            <strong>{{ j.company }}</strong>
+            <span>{{ j.role }} · {{ j.fit_percent }}%</span>
+          </div>
+          <span class="badge badge-{{ j.status|lower }}">{{ j.status }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">No manual jobs in today’s shortlist.</p>
+    {% endif %}
+  </section>
+</div>
+
+<section class="panel">
+  <div class="panel-head"><h2>Recent score runs</h2></div>
+  {% if runs %}
+  <table class="simple">
+    <thead><tr><th>Date</th><th>Catalog</th><th>Shortlist</th><th>Manual</th></tr></thead>
+    <tbody>
+      {% for r in runs %}
+      <tr>
+        <td>{{ r.run_date }}</td>
+        <td>{{ r.discovered }}</td>
+        <td>{{ r.shortlisted }}</td>
+        <td>{{ r.queued_manual }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty">Save a CV to score the catalog.</p>
+  {% endif %}
+</section>
+{% endblock %}

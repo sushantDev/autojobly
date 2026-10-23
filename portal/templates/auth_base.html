@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Autojobly{% endblock %}</title>
+  <meta name="description" content="{% block description %}Autojobly sends the CV you upload to roles that match that work. The first 3 applications are free, then $9 a month, up to 15 a day.{% endblock %}" />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:title" content="{% block og_title %}Autojobly{% endblock %}" />
+  <meta property="og:description" content="{% block og_description %}Autojobly sends the CV you upload to roles that match that work. The first 3 applications are free, then $9 a month.{% endblock %}" />
+  <meta property="og:type" content="website" />
+  {% set base = public_base() %}
+  {% if base.startswith('https://') %}
+  <link rel="canonical" href="{{ base }}{{ request.url.path }}" />
+  <meta property="og:url" content="{{ base }}{{ request.url.path }}" />
+  {% endif %}
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+  {% block extra_head %}{% endblock %}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/portal.css" />
+</head>
+<body>
+  {% block chrome %}{% endblock %}
+  <main class="{% block main_class %}auth-wrap{% endblock %}">
+    {% if notice %}<p class="banner">{{ notice }}</p>{% endif %}
+    {% if error %}<p class="banner bad">{{ error }}</p>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

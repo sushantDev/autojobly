@@ -1,0 +1,37 @@
+{% extends "auth_base.html" %}
+{% block title %}{% if skill_label %}{{ skill_label }} roles · Autojobly{% else %}Open roles · Autojobly{% endif %}{% endblock %}
+{% block description %}{% if skill_label %}Open {{ skill_label }} roles Autojobly can send. Country and title are checked before anything goes out.{% else %}Open software roles Autojobly can send. The first 3 applications are free.{% endif %}{% endblock %}
+{% block chrome %}{% include "site_nav.html" %}{% endblock %}
+{% block main_class %}site{% endblock %}
+{% block content %}
+<section class="prose">
+  <p class="eyebrow"><a href="/">Autojobly</a>{% if skill %} · <a href="/roles">All roles</a>{% endif %}</p>
+  <h1>{% if skill_label %}{{ skill_label }} roles{% else %}Open roles{% endif %}</h1>
+  <p>These listings are public. Autojobly sends only the ones that match the work on your CV, and only when the location is open to you. The first 3 applications are free.</p>
+  <p class="skill-row">
+    {% for slug, label, _pattern in skills %}
+    <a class="chip{% if skill == slug %} on{% endif %}" href="/roles/{{ slug }}">{{ label }}</a>
+    {% endfor %}
+  </p>
+</section>
+
+<section class="role-list">
+  {% if jobs %}
+  <ul>
+    {% for job in jobs %}
+    <li>
+      <div>
+        <strong>{{ job.company }}</strong>
+        <span>{{ job.role }}</span>
+        <small>{{ job.location or 'Location not listed' }}{% if job.ats %} · {{ job.ats|capitalize }}{% endif %}</small>
+      </div>
+      <a class="btn ghost" href="{{ job.url }}" target="_blank" rel="noopener">Open listing</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="empty">No open {{ skill_label or '' }} roles in the catalog yet. <a href="/signup">Add a CV</a> and fetch jobs to fill this list.</p>
+  {% endif %}
+  <p class="cta-row"><a class="btn" href="/signup">Start free</a></p>
+</section>
+{% endblock %}
