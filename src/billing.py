@@ -8,10 +8,10 @@ from typing import Any
 
 from .auth import get_user, set_subscription
 from .db import add_event, db, utc_now, utc_today
+from .settings import public_base
 
 PRICE_LABEL = "$9/month"
 PRICE_USD = 9
-APP_BASE_URL = os.environ.get("APP_BASE_URL", "http://127.0.0.1:8787")
 
 
 def owner_email() -> str:
@@ -228,7 +228,7 @@ def create_dodo_checkout(user: dict[str, Any]) -> str:
         product_cart=[{"product_id": dodo_product_id(), "quantity": 1}],
         customer={"customer_id": customer_id} if customer_id else {"email": user["email"]},
         metadata={"user_id": str(user["id"])},
-        return_url=f"{APP_BASE_URL}/billing",
+        return_url=f"{public_base()}/billing",
         feature_flags={"allow_discount_code": True},
     )
     if not session.checkout_url:
@@ -241,7 +241,7 @@ def dodo_portal_url(user: dict[str, Any]) -> str:
     customer_id = (user.get("dodo_customer_id") or "").strip()
     if not customer_id:
         raise ValueError("This account has no card subscription")
-    portal = _dodo_client().customers.customer_portal.create(customer_id, return_url=f"{APP_BASE_URL}/billing")
+    portal = _dodo_client().customers.customer_portal.create(customer_id, return_url=f"{public_base()}/billing")
     return portal.link
 
 
@@ -564,8 +564,8 @@ def create_checkout(user: dict[str, Any]) -> str:
         customer_email=user["email"],
         client_reference_id=str(user["id"]),
         line_items=[{"price": os.environ["STRIPE_PRICE_ID"], "quantity": 1}],
-        success_url=f"{APP_BASE_URL}/billing?checkout=success",
-        cancel_url=f"{APP_BASE_URL}/billing?checkout=cancel",
+        success_url=f"{public_base()}/billing?checkout=success",
+        cancel_url=f"{public_base()}/billing?checkout=cancel",
         metadata={"user_id": str(user["id"])},
     )
     return session.url

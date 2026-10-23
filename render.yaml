@@ -24,7 +24,11 @@ services:
         sync: false
       - key: DODO_PAYMENTS_API_KEY
         sync: false
+      - key: DODO_PAYMENTS_ENVIRONMENT
+        value: live_mode
       - key: DODO_PRODUCT_ID
+        sync: false
+      - key: DODO_PAYMENTS_WEBHOOK_KEY
         sync: false
       - key: ADMIN_EMAIL
         sync: false
