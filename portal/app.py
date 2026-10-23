@@ -462,6 +462,8 @@ def home(request: Request):
                 "board_count": company_board_count(),
                 "notice": request.query_params.get("notice", ""),
                 "error": request.query_params.get("error", ""),
+                "google_on": google_configured(),
+                "linkedin_on": linkedin_configured(),
             },
         )
     return today_page(request)

@@ -357,6 +357,7 @@ body:has(.site-nav) .auth-wrap {
 .legal-links { margin-top: 1.2rem; }
 .oauth-links { display: grid; gap: 0.5rem; margin: 0.9rem 0 0.4rem; }
 .hero .oauth-links { grid-template-columns: 1fr 1fr; max-width: 28rem; }
+.hero .oauth-links:has(a:only-child) { grid-template-columns: 1fr; }
 .oauth-links a {
   display: block;
   text-align: center;

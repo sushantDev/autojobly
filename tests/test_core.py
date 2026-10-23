@@ -593,11 +593,11 @@ class LoginTests(unittest.TestCase):
             page = client.get("/login")
             self.assertEqual(page.status_code, 200)
             self.assertIn("Autojobly", page.text)
-            self.assertIn("Continue with Google", page.text)
-            self.assertIn("Continue with LinkedIn", page.text)
+            self.assertNotIn("Continue with Google", page.text)
+            self.assertNotIn("Continue with LinkedIn", page.text)
             signup = client.get("/signup")
-            self.assertIn("Continue with Google", signup.text)
-            self.assertIn("Continue with LinkedIn", signup.text)
+            self.assertNotIn("Continue with Google", signup.text)
+            self.assertNotIn("Continue with LinkedIn", signup.text)
             home = client.get("/")
             self.assertEqual(home.status_code, 200)
             self.assertIn("$9/month", home.text)
@@ -635,6 +635,9 @@ class LoginTests(unittest.TestCase):
         os.environ["LINKEDIN_CLIENT_SECRET"] = "linkedin-secret"
         try:
             with TestClient(app, follow_redirects=False) as client:
+                login = client.get("/login")
+                self.assertIn("Continue with Google", login.text)
+                self.assertIn("Continue with LinkedIn", login.text)
                 start = client.get("/auth/google")
                 self.assertEqual(start.status_code, 303)
                 google_url = start.headers["location"]

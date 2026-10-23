@@ -1,4 +1,10 @@
+{% if google_on or linkedin_on %}
 <div class="oauth-links">
+  {% if google_on %}
   <a class="oauth google" href="/auth/google">Continue with Google</a>
+  {% endif %}
+  {% if linkedin_on %}
   <a class="oauth linkedin" href="/auth/linkedin">Continue with LinkedIn</a>
+  {% endif %}
 </div>
+{% endif %}
